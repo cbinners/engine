@@ -259,9 +259,8 @@ func (s *Store) PushGameFrame(
 
 // ListGameFrames will list frames by an offset and limit, it supports
 // negative offset.
-func (s *Store) ListGameFrames(
-	c context.Context, id string, limit, offset int) ([]*pb.GameFrame, error) {
-	if _, err := s.GetGame(c, id); err != nil {
+func (s *Store) ListGameFrames(ctx context.Context, id string, limit, offset int) ([]*pb.GameFrame, error) {
+	if _, err := s.GetGame(ctx, id); err != nil {
 		return nil, err
 	}
 
@@ -269,9 +268,10 @@ func (s *Store) ListGameFrames(
 	if offset < 0 {
 		order = "DESC"
 		offset = -offset
+		offset = offset - 1 // adjust the offset for common semantics
 	}
 
-	rows, err := s.db.QueryContext(c,
+	rows, err := s.db.QueryContext(ctx,
 		`SELECT value FROM game_frames WHERE id=$1 ORDER BY turn `+
 			order+` LIMIT $2 OFFSET $3`,
 		id, limit, offset,
