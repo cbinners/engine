@@ -19,7 +19,7 @@ func Runner(ctx context.Context, client pb.ControllerClient, id string) error {
 
 	for {
 		if lastFrame != nil && lastFrame.Turn == 0 {
-			rules.NotifyGameStart(resp.Game, lastFrame)
+
 		}
 		nextFrame, err := rules.GameTick(resp.Game, lastFrame)
 		if err != nil {
